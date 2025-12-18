@@ -8,9 +8,8 @@ public static class SeedData
     {
         if (db.Desks.Any()) return;
 
-        // Add id here only for test
-        var user1 = new User { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), FirstName = "Alice", LastName = "Johnson" };
-        var user2 = new User { Id = Guid.Parse("11111111-1111-1111-1111-111111111112"), FirstName = "Bob", LastName = "Smith" };
+        var user1 = new User { FirstName = "Alice", LastName = "Johnson" };
+        var user2 = new User { FirstName = "Bob", LastName = "Smith" };
 
         var desks = Enumerable.Range(1, 12)
             .Select(n => new Desk { Number = n })
