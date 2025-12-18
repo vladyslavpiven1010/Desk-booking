@@ -22,6 +22,22 @@ builder.Services.AddScoped<DeskService>();
 builder.Services.AddScoped<ReservationService>();
 builder.Services.AddScoped<ProfileService>();
 
+const string CorsPolicyName = "FrontendCorsPolicy";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(CorsPolicyName, policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5173",
+                "https://localhost:5173"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -29,6 +45,8 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 // Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseCors(CorsPolicyName);
 
 app.MapControllers();
 
