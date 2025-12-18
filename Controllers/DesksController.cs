@@ -13,9 +13,7 @@ public class DesksController : ControllerBase
     public DesksController(DeskService deskService) => _deskService = deskService;
 
     /// <summary>
-    /// Возвращает список столов на диапазон дат, со статусом и tooltip-данными.
-    /// Пример:
-    /// GET /api/desks?from=2025-12-17&to=2025-12-20&currentUserId=...
+    /// Returns a list of tables for a given date range, with status and tooltip data.
     /// </summary>
     [HttpGet]
     public async Task<ActionResult<List<DeskDto>>> GetDesks([FromQuery] DeskQueryDto query)

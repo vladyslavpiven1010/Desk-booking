@@ -4,9 +4,6 @@ using DeskBooking.Api.DTOs.Reservation;
 
 namespace DeskBooking.Api.Mappings;
 
-/// <summary>
-/// AutoMapper профиль. Используем только там, где реально удобно.
-/// </summary>
 public class MappingProfile : Profile
 {
     public MappingProfile()

@@ -1,4 +1,4 @@
-﻿using DeskBooking.Api.Common;
+﻿using Desk_booking.Common;
 using DeskBooking.Api.Data;
 using DeskBooking.Api.Domain;
 using DeskBooking.Api.DTOs.Reservation;
@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace DeskBooking.Api.Services;
 
 /// <summary>
-/// Сервис бронирований: создать / отменить (range или один день).
-/// Здесь ключевая сложность: отмена на один день => сдвиг или split брони.
+/// Booking service: create / cancel (range or single day).
+/// The key difficulty here is: canceling for one day => shifting or splitting the booking.
 /// </summary>
 public class ReservationService
 {
@@ -20,14 +20,14 @@ public class ReservationService
     {
         var range = new DateRange(dto.StartDate, dto.EndDate).Normalize();
 
-        // Проверяем существование пользователя и стола (лучше сразу отдать 404)
+        // Check the existence of the user and table
         var userExists = await _db.Users.AnyAsync(u => u.Id == dto.UserId);
         if (!userExists) throw new BusinessException("User not found.", 404);
 
         var deskExists = await _db.Desks.AnyAsync(d => d.Id == dto.DeskId);
         if (!deskExists) throw new BusinessException("Desk not found.", 404);
 
-        // 1) Запрещаем бронь на maintenance
+        // 1) We prohibit reservations for maintenance
         var hasMaintenance = await _db.MaintenanceWindows
             .AnyAsync(m => m.DeskId == dto.DeskId
                         && m.StartDate.Date <= range.To
@@ -36,7 +36,7 @@ public class ReservationService
         if (hasMaintenance)
             throw new BusinessException("Desk is under maintenance for the selected date range.", 409);
 
-        // 2) Запрещаем пересечение с активной бронью
+        // 2) We prohibit intersection with active booking
         var intersectsReservation = await _db.Reservations
             .Where(r => r.DeskId == dto.DeskId && r.CanceledAt == null)
             .AnyAsync(r => r.StartDate.Date <= range.To && r.EndDate.Date >= range.From);
@@ -61,20 +61,19 @@ public class ReservationService
 
     public async Task CancelAsync(Guid reservationId, CancelReservationDto dto)
     {
-        // Вытягиваем бронь
+        // Extract the reservation
         var reservation = await _db.Reservations
             .FirstOrDefaultAsync(r => r.Id == reservationId);
 
         if (reservation == null) throw new BusinessException("Reservation not found.", 404);
-        if (reservation.IsCanceled) return; // идемпотентность
+        if (reservation.IsCanceled) return;
 
-        // “Без auth” всё равно нужно правило: отменить может только владелец брони.
+        // Only the booking owner can cancel.
         if (reservation.UserId != dto.UserId)
             throw new BusinessException("You can cancel only your own reservation.", 403);
 
         if (dto.Mode == CancelMode.Range)
         {
-            // Отмена всей брони => soft-cancel (для истории)
             reservation.CanceledAt = DateTime.UtcNow;
             await _db.SaveChangesAsync();
             return;
@@ -86,11 +85,10 @@ public class ReservationService
 
         var day = dto.Day.Value.Date;
 
-        // День должен быть внутри брони
         if (!reservation.Range.ContainsDay(day))
             throw new BusinessException("The specified day is outside the reservation range.", 400);
 
-        // Если бронь на один день => просто cancel
+        // If the reservation is for one day => just cancel
         if (reservation.StartDate.Date == reservation.EndDate.Date)
         {
             reservation.CanceledAt = DateTime.UtcNow;
@@ -98,7 +96,7 @@ public class ReservationService
             return;
         }
 
-        // Если день = StartDate => сдвигаем начало на +1
+        // If day = StartDate => shift the start by +1
         if (day == reservation.StartDate.Date)
         {
             reservation.StartDate = reservation.StartDate.Date.AddDays(1);
@@ -106,7 +104,7 @@ public class ReservationService
             return;
         }
 
-        // Если день = EndDate => сдвигаем конец на -1
+        // If day = EndDate => shift the end by -1
         if (day == reservation.EndDate.Date)
         {
             reservation.EndDate = reservation.EndDate.Date.AddDays(-1);
@@ -114,17 +112,15 @@ public class ReservationService
             return;
         }
 
-        // Иначе: день внутри => split на две брони
-        // Левый кусок: [Start .. day-1]
+        // Otherwise: day inside => split into two reservations
         var leftStart = reservation.StartDate.Date;
         var leftEnd = day.AddDays(-1);
 
-        // Правый кусок: [day+1 .. End]
+        // Right piece: [day+1 .. End]
         var rightStart = day.AddDays(1);
         var rightEnd = reservation.EndDate.Date;
 
-        // Мы обновим текущую бронь как левую часть, а правую создадим новой.
-        // Это проще, чем отменять и создавать две.
+        // Update the current reservation as the left part, and create a new one on the right.
         reservation.StartDate = leftStart;
         reservation.EndDate = leftEnd;
 

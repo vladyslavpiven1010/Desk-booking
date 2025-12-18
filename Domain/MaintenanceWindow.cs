@@ -1,4 +1,4 @@
-﻿using DeskBooking.Api.Common;
+﻿using Desk_booking.Common;
 
 namespace DeskBooking.Api.Domain;
 
@@ -9,8 +9,8 @@ public class MaintenanceWindow
     public Guid DeskId { get; set; }
     public Desk? Desk { get; set; }
 
-    public DateTime StartDate { get; set; }   // включительно
-    public DateTime EndDate { get; set; }     // включительно
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 
     public string Message { get; set; } = "Maintenance";
 

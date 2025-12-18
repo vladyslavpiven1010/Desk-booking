@@ -1,12 +1,10 @@
 ﻿using DeskBooking.Api.Domain;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace DeskBooking.Api.Data;
 
 /// <summary>
-/// EF Core DbContext. InMemory провайдер позволяет хранить данные только в памяти.
-/// Для задания это идеально: быстро и не требует настоящей базы.
+/// EF Core DbContext. The InMemory provider allows storing data only in memory.
 /// </summary>
 public class AppDbContext : DbContext
 {

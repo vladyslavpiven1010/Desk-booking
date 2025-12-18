@@ -8,9 +8,5 @@ public class CancelReservationDto
 
     public CancelMode Mode { get; set; }
 
-    /// <summary>
-    /// Требуется только при Mode = Day.
-    /// День должен лежать внутри брони.
-    /// </summary>
     public DateTime? Day { get; set; }
 }

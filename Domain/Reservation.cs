@@ -1,4 +1,4 @@
-﻿using DeskBooking.Api.Common;
+﻿using Desk_booking.Common;
 
 namespace DeskBooking.Api.Domain;
 
@@ -12,15 +12,11 @@ public class Reservation
     public Guid UserId { get; set; }
     public User? User { get; set; }
 
-    public DateTime StartDate { get; set; }   // включительно
-    public DateTime EndDate { get; set; }     // включительно
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    /// <summary>
-    /// Если отменили бронь (whole range или исходную при split) — ставим дату.
-    /// Это нужно, чтобы хранить историю.
-    /// </summary>
     public DateTime? CanceledAt { get; set; }
 
     public bool IsCanceled => CanceledAt != null;

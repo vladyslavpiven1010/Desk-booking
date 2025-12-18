@@ -1,11 +1,7 @@
 ﻿using System.Text.Json;
 
-namespace DeskBooking.Api.Common;
+namespace Desk_booking.Common;
 
-/// <summary>
-/// Глобальный middleware: превращает исключения в аккуратный JSON.
-/// Это уменьшает мусорный boilerplate в контроллерах.
-/// </summary>
 public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
@@ -29,7 +25,6 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception)
         {
-            // В проде тут логирование.
             http.Response.StatusCode = 500;
             http.Response.ContentType = "application/json";
             await http.Response.WriteAsync(JsonSerializer.Serialize(new

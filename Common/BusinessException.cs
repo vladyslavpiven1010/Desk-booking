@@ -1,10 +1,5 @@
-﻿namespace DeskBooking.Api.Common;
+﻿namespace Desk_booking.Common;
 
-/// <summary>
-/// Ошибка бизнес-правил (например: "стол уже занят", "пересечение дат").
-/// Мы используем её, чтобы отдать корректный HTTP статус (обычно 409/400),
-/// и понятное сообщение фронтенду.
-/// </summary>
 public class BusinessException : Exception
 {
     public int StatusCode { get; }

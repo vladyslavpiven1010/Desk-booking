@@ -1,15 +1,12 @@
-﻿namespace DeskBooking.Api.Common;
+﻿namespace Desk_booking.Common;
 
 /// <summary>
-/// Value-object для диапазона дат.
-/// Мы храним даты как DateOnly (если хочешь) или DateTime.
-/// Для простоты использую DateTime, но трактуем как "день" без времени.
+/// Value-object for data range.
 /// </summary>
 public readonly record struct DateRange(DateTime From, DateTime To)
 {
     public DateRange Normalize()
     {
-        // Убираем время, чтобы логика "по дням" была предсказуемой.
         var from = From.Date;
         var to = To.Date;
 

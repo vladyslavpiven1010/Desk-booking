@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DeskBooking.Api.Common;
+using Desk_booking.Common;
 using DeskBooking.Api.Data;
 using DeskBooking.Api.DTOs.Profile;
 using DeskBooking.Api.DTOs.Reservation;
@@ -7,9 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DeskBooking.Api.Services;
 
-/// <summary>
-/// Профиль пользователя: имя/фамилия, текущие брони, история.
-/// </summary>
 public class ProfileService
 {
     private readonly AppDbContext _db;
@@ -35,13 +32,13 @@ public class ProfileService
             .OrderByDescending(r => r.CreatedAt)
             .ToListAsync();
 
-        // "Current" — ещё актуальные (не отменены) и end >= today
+        // "Current" — still relevant (not canceled) and end >= today
         var current = reservations
             .Where(r => r.CanceledAt == null && r.EndDate.Date >= today)
             .Select(r => _mapper.Map<ReservationDto>(r))
             .ToList();
 
-        // "Past" — всё остальное: отменённые или уже закончились
+        // "Past" — everything else: cancelled or already ended
         var past = reservations
             .Where(r => r.CanceledAt != null || r.EndDate.Date < today)
             .Select(r => _mapper.Map<ReservationDto>(r))

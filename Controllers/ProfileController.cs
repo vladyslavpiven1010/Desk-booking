@@ -14,8 +14,7 @@ public class ProfileController : ControllerBase
         => _profileService = profileService;
 
     /// <summary>
-    /// Получить профиль пользователя:
-    /// GET /api/profile?userId=...
+    /// Get users profiles:
     /// </summary>
     [HttpGet]
     public async Task<ActionResult<ProfileDto>> GetProfile([FromQuery] Guid userId)

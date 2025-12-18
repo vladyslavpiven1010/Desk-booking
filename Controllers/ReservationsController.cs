@@ -14,7 +14,7 @@ public class ReservationsController : ControllerBase
         => _reservationService = reservationService;
 
     /// <summary>
-    /// Создать бронь.
+    /// Create booking.
     /// POST /api/reservations
     /// body: { deskId, userId, startDate, endDate }
     /// </summary>
@@ -26,7 +26,7 @@ public class ReservationsController : ControllerBase
     }
 
     /// <summary>
-    /// Отменить бронь: на день (split) или целиком.
+    /// Deny booking for one day.
     /// POST /api/reservations/{id}/cancel
     /// body: { userId, mode: Day|Range, day? }
     /// </summary>

@@ -1,9 +1,8 @@
-using DeskBooking.Api.Common;
+using Desk_booking.Common;
 using DeskBooking.Api.Data;
 using DeskBooking.Api.Mappings;
 using DeskBooking.Api.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 

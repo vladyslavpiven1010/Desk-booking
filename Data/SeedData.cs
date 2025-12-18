@@ -8,6 +8,7 @@ public static class SeedData
     {
         if (db.Desks.Any()) return;
 
+        // Add id here only for test
         var user1 = new User { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), FirstName = "Alice", LastName = "Johnson" };
         var user2 = new User { Id = Guid.Parse("11111111-1111-1111-1111-111111111112"), FirstName = "Bob", LastName = "Smith" };
 
@@ -18,7 +19,7 @@ public static class SeedData
         db.Users.AddRange(user1, user2);
         db.Desks.AddRange(desks);
 
-        // Пример: у стола 3 maintenance на несколько дней
+        // Example: table 3 has maintenance for several days
         db.MaintenanceWindows.Add(new MaintenanceWindow
         {
             DeskId = desks[2].Id, // №3
@@ -27,7 +28,7 @@ public static class SeedData
             Message = "Broken monitor"
         });
 
-        // Пример: бронь на стол №5
+        // Example: table 5 has maintenance for several days
         db.Reservations.Add(new Reservation
         {
             DeskId = desks[4].Id,
