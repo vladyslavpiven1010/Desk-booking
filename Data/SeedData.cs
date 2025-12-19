@@ -21,7 +21,7 @@ public static class SeedData
         // Example: table 3 has maintenance for several days
         db.MaintenanceWindows.Add(new MaintenanceWindow
         {
-            DeskId = desks[2].Id, // №3
+            DeskId = desks[2].Id,
             StartDate = DateTime.UtcNow.Date.AddDays(2),
             EndDate = DateTime.UtcNow.Date.AddDays(4),
             Message = "Broken monitor"

@@ -1,6 +1,22 @@
 import { useEffect, useState } from "react";
+import {
+  Box,
+  ToggleButton,
+  ToggleButtonGroup,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import { Api } from "../api";
 import TopBar from "../componets/TopBar";
+
+type ViewMode = "current" | "past";
 
 export default function ProfilePage() {
   const [userId, setUserId] = useState(
@@ -13,13 +29,22 @@ export default function ProfilePage() {
   );
 
   const [profile, setProfile] = useState<any>(null);
+  const [view, setView] = useState<ViewMode>("current");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!userId) return;
-    Api.getProfile(userId).then(setProfile);
+
+    setLoading(true);
+    Api.getProfile(userId)
+      .then(setProfile)
+      .finally(() => setLoading(false));
   }, [userId]);
 
-  if (!profile) return null;
+  const rows =
+    view === "current"
+      ? profile?.currentReservations ?? []
+      : profile?.pastReservations ?? [];
 
   return (
     <>
@@ -30,21 +55,65 @@ export default function ProfilePage() {
         onDateChange={setDate}
       />
 
-      <h2>{profile.fullName}</h2>
+      <Box sx={{ p: 3 }}>
+        <Typography variant="h5" gutterBottom>
+          {profile?.fullName ?? "Profile"}
+        </Typography>
 
-      <h3>Current reservations</h3>
-      {profile.currentReservations.map((r: any) => (
-        <div key={r.id}>
-          Desk {r.deskNumber}: {r.startDate} → {r.endDate}
-        </div>
-      ))}
+        {/* Switcher */}
+        <ToggleButtonGroup
+          value={view}
+          exclusive
+          onChange={(_, v) => v && setView(v)}
+          sx={{ mb: 2 }}
+        >
+          <ToggleButton value="current">
+            Current reservations
+          </ToggleButton>
+          <ToggleButton value="past">
+            Past reservations
+          </ToggleButton>
+        </ToggleButtonGroup>
 
-      <h3>Past reservations</h3>
-      {profile.pastReservations.map((r: any) => (
-        <div key={r.id}>
-          Desk {r.deskNumber}: {r.startDate} → {r.endDate}
-        </div>
-      ))}
+        {/* Content */}
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <TableContainer component={Paper} elevation={0} variant="outlined" sx={{ boxShadow: "none" }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell><b>Desk</b></TableCell>
+                  <TableCell><b>Start time</b></TableCell>
+                  <TableCell><b>Finish time</b></TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {rows.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={3} align="center">
+                      No reservations
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  rows.map((r: any) => (
+                    <TableRow key={r.id}>
+                      <TableCell>
+                        Desk {r.deskNumber}
+                      </TableCell>
+                      <TableCell>{r.startDate}</TableCell>
+                      <TableCell>{r.endDate}</TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </Box>
     </>
   );
 }

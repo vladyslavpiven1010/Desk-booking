@@ -1,32 +1,85 @@
-import { Dialog, Button, Typography } from "@mui/material";
+import { Dialog, Button, Typography, Stack } from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
 import { Api } from "../api";
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  desk: any;
+  userId: string;
+  initialDate: string;
+  onSuccess: () => void;
+};
 
 export default function ReserveDialog({
   open,
   onClose,
   desk,
   userId,
-  from,
-  to,
+  initialDate,
   onSuccess,
-}: any) {
+}: Props) {
+  const [startDate, setStartDate] = useState<Dayjs | null>(
+    dayjs(initialDate)
+  );
+  const [endDate, setEndDate] = useState<Dayjs | null>(
+    dayjs(initialDate)
+  );
+
+  const canReserve =
+    startDate &&
+    endDate &&
+    !endDate.isBefore(startDate);
+
   const reserve = async () => {
+    if (!canReserve) return;
+
     await Api.createReservation({
       deskId: desk.deskId,
       userId,
-      startDate: from,
-      endDate: to,
+      startDate: startDate!.format("YYYY-MM-DD"),
+      endDate: endDate!.format("YYYY-MM-DD"),
     });
+
     onClose();
     onSuccess();
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <Typography padding={2}>
-        Reserve desk {desk.number} from {from} to {to}?
-      </Typography>
-      <Button onClick={reserve}>Confirm</Button>
+      <Stack padding={2} spacing={2}>
+        <Typography>
+          Reserve desk {desk.number}
+        </Typography>
+
+        <DatePicker
+          label="Start date"
+          value={startDate}
+          onChange={setStartDate}
+          slotProps={{ textField: { size: "small" } }}
+        />
+
+        <DatePicker
+          label="End date"
+          value={endDate}
+          onChange={setEndDate}
+          slotProps={{ textField: { size: "small" } }}
+          minDate={startDate ?? undefined}
+        />
+
+        <Button
+          onClick={reserve}
+          disabled={!canReserve}
+        >
+          Confirm reservation
+        </Button>
+
+        <Button onClick={onClose}>
+          Cancel
+        </Button>
+      </Stack>
     </Dialog>
   );
 }

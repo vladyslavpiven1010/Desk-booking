@@ -54,30 +54,28 @@ export default function TopBar({
   };
 
   return (
-    <AppBar position="static">
-      <Toolbar sx={{ gap: 2, flexWrap: "wrap" }}>
-        {/* User selector */}
-        {loading ? (
-          <CircularProgress size={24} color="inherit" />
-        ) : (
-          <Box sx={{ minWidth: 220 }}>
-            <Select
-              value={userId}
-              onChange={(e) => {
-                const id = e.target.value;
-                localStorage.setItem("userId", id);
-                onUserChange(id);
-              }}
-              sx={{ color: "white" }}
-            >
-              {users.map((u) => (
-                <MenuItem key={u.id} value={u.id}>
-                  {u.fullName}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
-        )}
+    <AppBar position="static" sx={{ mb: 3 }}>
+      <Toolbar sx={{ gap: 2, flexWrap: "wrap", justifyContent: "space-between" }}>
+        {/* Navigation */}
+        <div>
+          <Button
+            color="inherit"
+            sx={{ fontSize: "1.1rem" }}
+            onClick={() => navigate("/")}
+            disabled={location.pathname === "/"}
+          >
+            Desks
+          </Button>
+
+          <Button
+            color="inherit"
+            sx={{ fontSize: "1.1rem" }}
+            onClick={() => navigate("/profile")}
+            disabled={location.pathname === "/profile"}
+          >
+            Profile
+          </Button>
+        </div>
 
         {/* Date range picker */}
         <DatePicker
@@ -87,22 +85,30 @@ export default function TopBar({
           slotProps={{ textField: { size: "small" } }}
         />
 
-        {/* Navigation */}
-        <Button
-          color="inherit"
-          onClick={() => navigate("/")}
-          disabled={location.pathname === "/"}
-        >
-          Desks
-        </Button>
-
-        <Button
-          color="inherit"
-          onClick={() => navigate("/profile")}
-          disabled={location.pathname === "/profile"}
-        >
-          Profile
-        </Button>
+        {/* User selector */}
+        <Box sx={{ minWidth: 220, display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+          {loading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            <Select
+              value={userId}
+              onChange={(e) => {
+                const id = e.target.value;
+                localStorage.setItem("userId", id);
+                onUserChange(id);
+              }}
+              sx={{ color: "white" }}
+              variant="standard"
+              disableUnderline
+            >
+              {users.map((u) => (
+                <MenuItem key={u.id} value={u.id}>
+                  {u.fullName}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        </Box>
       </Toolbar>
     </AppBar>
   );

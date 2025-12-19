@@ -4,25 +4,18 @@ import {
   Typography,
   Button,
   Tooltip,
+  CardActions,
 } from "@mui/material";
 import { DeskDto, DeskStatus } from "../types";
 import ReserveDialog from "./ReserveDialog";
 import CancelDialog from "./CancelDialog";
 import { useState } from "react";
-
-type Props = {
-  desk: DeskDto;
-  userId: string;
-  from: string;
-  to: string;
-  onChanged: () => void;
-};
+import DeskActionButton from "./DeskActionButton";
 
 export default function DeskCard({
   desk,
   userId,
   from,
-  to,
   onChanged,
 }: {
   desk: DeskDto;
@@ -49,26 +42,27 @@ export default function DeskCard({
           : desk.maintenanceMessage ?? ""
       }
     >
-      <Card sx={{ backgroundColor: color }}>
-        <CardContent>
+      <Card sx={{ backgroundColor: color, height: 160, display: "flex", flexDirection: "column"  }}>
+        <CardContent sx={{ flexGrow: 1 }}>
           <Typography variant="h6">Desk {desk.number}</Typography>
+        </CardContent>
 
+        <CardActions sx={{ minHeight: 48, px: 2, pb: 2 }}>
           {desk.status === DeskStatus.Open && (
-            <Button onClick={() => setReserveOpen(true)}>Reserve</Button>
+            <DeskActionButton intent="reserve" onClick={() => setReserveOpen(true)}>Reserve</DeskActionButton>
           )}
 
           {desk.status === DeskStatus.Reserved && desk.isMine && (
-            <Button onClick={() => setCancelOpen(true)}>Cancel</Button>
+            <DeskActionButton intent="cancel" onClick={() => setCancelOpen(true)}>Cancel</DeskActionButton>
           )}
-        </CardContent>
-
+        </CardActions>
+        
         <ReserveDialog
           open={reserveOpen}
           onClose={() => setReserveOpen(false)}
           desk={desk}
           userId={userId}
-          from={from}
-          to={to}
+          initialDate={from}
           onSuccess={onChanged}
         />
 
@@ -78,7 +72,6 @@ export default function DeskCard({
           reservationId={desk.reservationId!}
           userId={userId}
           from={from}
-          to={to}
           onSuccess={onChanged}
         />
       </Card>

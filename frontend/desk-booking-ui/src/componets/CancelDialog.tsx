@@ -1,6 +1,15 @@
-import { Dialog, Button, Stack } from "@mui/material";
+import { Dialog, Button, Stack, Typography } from "@mui/material";
 import { Api } from "../api";
 import { CancelMode } from "../types";
+
+type Props = {
+  open: boolean;
+  onClose: () => void;
+  reservationId: string;
+  userId: string;
+  from: string;
+  onSuccess: () => void;
+};
 
 export default function CancelDialog({
   open,
@@ -8,9 +17,18 @@ export default function CancelDialog({
   reservationId,
   userId,
   from,
-  to,
   onSuccess,
-}: any) {
+}: Props) {
+  const cancelDay = async () => {
+    await Api.cancelReservation(reservationId, {
+      userId,
+      mode: CancelMode.Day,
+      day: from,
+    });
+    onClose();
+    onSuccess();
+  };
+
   const cancelRange = async () => {
     await Api.cancelReservation(reservationId, {
       userId,
@@ -22,8 +40,28 @@ export default function CancelDialog({
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <Stack padding={2} spacing={1}>
-        <Button onClick={cancelRange}>Cancel whole range</Button>
+      <Stack padding={2} spacing={2}>
+        <Typography>
+          How do you want to cancel this reservation?
+        </Typography>
+
+        <Button
+          color="warning"
+          onClick={cancelDay}
+        >
+          Cancel only this day
+        </Button>
+
+        <Button
+          color="error"
+          onClick={cancelRange}
+        >
+          Cancel whole reservation
+        </Button>
+
+        <Button onClick={onClose}>
+          Close
+        </Button>
       </Stack>
     </Dialog>
   );
