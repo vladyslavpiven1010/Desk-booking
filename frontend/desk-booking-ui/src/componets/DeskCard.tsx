@@ -10,6 +10,14 @@ import ReserveDialog from "./ReserveDialog";
 import CancelDialog from "./CancelDialog";
 import { useState } from "react";
 
+type Props = {
+  desk: DeskDto;
+  userId: string;
+  from: string;
+  to: string;
+  onChanged: () => void;
+};
+
 export default function DeskCard({
   desk,
   userId,

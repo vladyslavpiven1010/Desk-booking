@@ -8,9 +8,14 @@ export default function ProfilePage() {
       "11111111-1111-1111-1111-111111111111"
   );
 
+  const [date, setDate] = useState(
+    localStorage.getItem("date") ?? "2025-01-10"
+  );
+
   const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
+    if (!userId) return;
     Api.getProfile(userId).then(setProfile);
   }, [userId]);
 
@@ -18,7 +23,12 @@ export default function ProfilePage() {
 
   return (
     <>
-      <TopBar userId={userId} onUserChange={setUserId} />
+      <TopBar
+        userId={userId}
+        onUserChange={setUserId}
+        date={date}
+        onDateChange={setDate}
+      />
 
       <h2>{profile.fullName}</h2>
 

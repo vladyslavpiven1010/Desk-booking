@@ -10,15 +10,17 @@ export default function DesksPage() {
     localStorage.getItem("userId") ?? ""
   );
 
-  const [from] = useState("2025-01-10");
-  const [to] = useState("2025-01-15");
+  const [date, setDate] = useState(
+    localStorage.getItem("date") ?? "2025-01-10"
+  );
+
   const [desks, setDesks] = useState<DeskDto[]>([]);
 
   const load = useCallback(async () => {
-    if (!userId) return;
-    const data = await Api.getDesks(from, to, userId);
+    if (!userId || !date) return;
+    const data = await Api.getDesks(date, date, userId);
     setDesks(data);
-  }, [from, to, userId]);
+  }, [date, userId]);
 
   useEffect(() => {
     load();
@@ -26,7 +28,12 @@ export default function DesksPage() {
 
   return (
     <>
-      <TopBar userId={userId} onUserChange={setUserId} />
+      <TopBar
+        userId={userId}
+        onUserChange={setUserId}
+        date={date}
+        onDateChange={setDate}
+      />
 
       <Grid container spacing={2} padding={2}>
         {desks.map((desk) => (
@@ -34,8 +41,8 @@ export default function DesksPage() {
             <DeskCard
               desk={desk}
               userId={userId}
-              from={from}
-              to={to}
+              from={date}
+              to={date}
               onChanged={load}
             />
           </Grid>
