@@ -33,16 +33,24 @@ public class ProfileService
             .ToListAsync();
 
         // "Current" — still relevant (not canceled) and end >= today
-        var current = reservations
-            .Where(r => r.CanceledAt == null && r.EndDate.Date >= today)
+        var current = await _db.Reservations
+            .Include(r => r.Desk)
+            .Where(r =>
+                r.UserId == userId &&
+                r.CanceledAt == null &&
+                r.EndDate.Date >= today)
+            .OrderBy(r => r.StartDate)
             .Select(r => _mapper.Map<ReservationDto>(r))
-            .ToList();
+            .ToListAsync();
 
-        // "Past" — everything else: cancelled or already ended
-        var past = reservations
-            .Where(r => r.CanceledAt != null || r.EndDate.Date < today)
+        var past = await _db.Reservations
+            .Include(r => r.Desk)
+            .Where(r =>
+                r.UserId == userId &&
+                (r.CanceledAt != null || r.EndDate.Date < today))
+            .OrderByDescending(r => r.EndDate)
             .Select(r => _mapper.Map<ReservationDto>(r))
-            .ToList();
+            .ToListAsync();
 
         return new ProfileDto
         {

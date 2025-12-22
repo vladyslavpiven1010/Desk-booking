@@ -9,16 +9,15 @@ type Props = ButtonProps & {
 export default function DeskActionButton({ intent, sx, ...props }: Props) {
   const theme = useTheme();
 
-  const cfg =
-    intent === "reserve"
-      ? {
-          text: theme.palette.success.main,
-          hoverBg: theme.palette.success.light,
-        }
-      : {
-          text: theme.palette.error.main,
-          hoverBg: theme.palette.error.light,
-        };
+  const cfg = intent === "reserve"
+    ? {
+        text: theme.palette.success.main,
+        hoverBg: theme.palette.action.hover,
+      }
+    : {
+        text: theme.palette.error.main,
+        hoverBg: theme.palette.action.hover,
+      };
 
   return (
     <Button

@@ -7,7 +7,7 @@ type Props = {
   onClose: () => void;
   reservationId: string;
   userId: string;
-  from: string;
+  from: string; 
   onSuccess: () => void;
 };
 

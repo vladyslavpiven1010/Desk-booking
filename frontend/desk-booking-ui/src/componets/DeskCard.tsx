@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Button,
   Tooltip,
   CardActions,
 } from "@mui/material";
@@ -11,6 +10,7 @@ import ReserveDialog from "./ReserveDialog";
 import CancelDialog from "./CancelDialog";
 import { useState } from "react";
 import DeskActionButton from "./DeskActionButton";
+import { useTheme } from "@mui/material/styles";
 
 export default function DeskCard({
   desk,
@@ -27,12 +27,14 @@ export default function DeskCard({
   const [reserveOpen, setReserveOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
 
-  const color =
+  const theme = useTheme();
+
+  const bgColor =
     desk.status === DeskStatus.Open
-      ? "#c8e6c9"
+      ? theme.palette.success.light
       : desk.status === DeskStatus.Reserved
-      ? "#ffcdd2"
-      : "#fff9c4";
+      ? theme.palette.error.light
+      : theme.palette.warning.light;
 
   return (
     <Tooltip
@@ -42,7 +44,7 @@ export default function DeskCard({
           : desk.maintenanceMessage ?? ""
       }
     >
-      <Card sx={{ backgroundColor: color, height: 160, display: "flex", flexDirection: "column"  }}>
+      <Card sx={{ backgroundColor: bgColor, height: 160, display: "flex", flexDirection: "column"  }}>
         <CardContent sx={{ flexGrow: 1 }}>
           <Typography variant="h6">Desk {desk.number}</Typography>
         </CardContent>

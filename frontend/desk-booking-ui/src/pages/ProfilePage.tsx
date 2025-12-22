@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { Api } from "../api";
 import TopBar from "../componets/TopBar";
+import dayjs from "dayjs";
 
 type ViewMode = "current" | "past";
 
@@ -82,12 +83,24 @@ export default function ProfilePage() {
           </Box>
         ) : (
           <TableContainer component={Paper} elevation={0} variant="outlined" sx={{ boxShadow: "none" }}>
-            <Table size="small">
+            <Table size="small" sx={{ tableLayout: "fixed" }}>
               <TableHead>
                 <TableRow>
-                  <TableCell><b>Desk</b></TableCell>
-                  <TableCell><b>Start time</b></TableCell>
-                  <TableCell><b>Finish time</b></TableCell>
+                  <TableCell sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}><b>Desk</b></TableCell>
+                  <TableCell sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}><b>Start time</b></TableCell>
+                  <TableCell sx={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}><b>Finish time</b></TableCell>
                 </TableRow>
               </TableHead>
 
@@ -104,8 +117,12 @@ export default function ProfilePage() {
                       <TableCell>
                         Desk {r.deskNumber}
                       </TableCell>
-                      <TableCell>{r.startDate}</TableCell>
-                      <TableCell>{r.endDate}</TableCell>
+                      <TableCell>
+                        {dayjs(r.startDate).format("DD/MM/YYYY")}
+                      </TableCell>
+                      <TableCell>
+                        {dayjs(r.endDate).format("DD/MM/YYYY")}
+                      </TableCell>
                     </TableRow>
                   ))
                 )}
