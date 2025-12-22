@@ -4,16 +4,9 @@ const theme = createTheme({
   palette: {
     primary: {
       main: "#2F96FE",
-      dark: "#196BCA",
-      light: "#EAF4FF",
       contrastText: "#FFFFFF",
     },
-    secondary: {
-      main: "#14B8A6",
-      dark: "#0D9488",
-      light: "#E6FFFB",
-      contrastText: "#FFFFFF",
-    },
+
     success: {
       main: "#22C55E",
       light: "#E9FBEF",
@@ -26,10 +19,7 @@ const theme = createTheme({
       main: "#EF4444",
       light: "#FEECEC",
     },
-    info: {
-      main: "#3B82F6",
-      light: "#EAF4FF",
-    },
+
     background: {
       default: "#F6F8FB",
       paper: "#FFFFFF",
@@ -40,17 +30,20 @@ const theme = createTheme({
     },
     divider: "#E2E8F0",
   },
+
   shape: {
     borderRadius: 12,
   },
+
   typography: {
     fontFamily:
       "Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif",
     button: {
       textTransform: "none",
-      fontWeight: 600
+      fontWeight: 600,
     },
   },
+
   components: {
     MuiCssBaseline: {
       styleOverrides: {
@@ -95,3 +88,4 @@ const theme = createTheme({
 });
 
 export default theme;
+
